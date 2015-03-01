@@ -1,4 +1,4 @@
-require_relative '../core/CursorRequest'
+require_relative '../core/TwitterRequest'
 
 class FriendshipLookup
 	
@@ -27,5 +27,5 @@ class FriendshipLookup
 		log.info("#{friendships.size} new friendships received.")
 		log.info("#{count} total friendships received.")
 		yield friendships
-		endf
+	end
 end
