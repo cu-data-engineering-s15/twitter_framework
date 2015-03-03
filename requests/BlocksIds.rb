@@ -1,4 +1,4 @@
-require_relative '../core.CursorRequest'
+require_relative '../core/CursorRequest'
 
 class BlockIds < CursorRequest
   
