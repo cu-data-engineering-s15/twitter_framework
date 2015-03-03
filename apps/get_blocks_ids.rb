@@ -27,7 +27,6 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:screen_name] = ARGV[0]
   opts
 end
 
@@ -36,16 +35,15 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { screen_name: input[:screen_name] }
   data   = { props: input[:props] }
 
-  args     = { params: params, data: data }
+  args     = { params: {}, data: data }
 
-  twitter = BlocksIds.new(args)
+  twitter = BlockIds.new(args)
 
-  puts "Collecting blocked user ids of '#{input[:screen_name]}'"
+  puts "Collecting your blocked Ids"
   
-  file.open('blocks_id.txt', 'w') do |b|
+  File.open('blocks_id.txt', 'w') do |b|
     twitter.collect do |ids|
       ids.each do |id|
         b.puts "#{id}\n"
