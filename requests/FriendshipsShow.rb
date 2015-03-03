@@ -1,10 +1,9 @@
-require_relative ##what to write here
+require_relative '../core/TwitterRequest'
 
-class FriendshipsShow < ##what to write here
+class FriendshipsShow < TwitterRequest
 
   def initialize(args)
     super args
-    ##what to write here
   end
 
   def request_name
@@ -21,7 +20,8 @@ class FriendshipsShow < ##what to write here
 
   def success(response)
     log.info("SUCCESS")
-    ##what to write here
+    relationship = JSON.parse(response.body)['relationship']
+    yield relationship
   end
 
 end
