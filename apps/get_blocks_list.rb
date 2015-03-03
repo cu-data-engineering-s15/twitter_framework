@@ -9,8 +9,6 @@ Usage:
   ruby get_blocks_list.rb <options> <screen_name> <list_slug>
 
   <screen_name>: Screen name of owner who is blocking.
-  
-  <slug>: The slug belonging to the list.
 }
 
 def parse_command_line
@@ -28,7 +26,6 @@ def parse_command_line
   end
 
   opts[:screen_name] = ARGV[0]
-  opts[:slug] = ARGV[1]
   opts
 end
 
@@ -37,14 +34,14 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { slug: input[:slug], screen_name: input[:screen_name] }
+  params = { screen_name: input[:screen_name] }
   data   = { props: input[:props] }
 
   args     = { params: params, data: data }
 
   twitter = ListBlocks.new(args)
 
-  puts "Collecting the ids of the Twitter users that are blocked by '#{input[:slug]}'"
+  puts "Collecting the ids of the Twitter users that are blocked by '#{input[:screen_name]}'"
 
   File.open('blocks_list_ids.txt', 'w') do |f|
     twitter.collect do |ids|
