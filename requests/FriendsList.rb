@@ -28,21 +28,5 @@ class FriendsList < CursorRequest
     log.info("#{@count} total friend(s) recieved.")
     yield friends
   end
-  
-  def init_condition
-      @num_success = 0
-  end
-  
-  def condition
-      @num_success < 16
-  end
-  
-  def update_condition(friends)
-      if friends.size > 0
-          @num_success += 1
-          else
-          @num_success = 16
-      end
-  end
 
 end
