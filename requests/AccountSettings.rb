@@ -17,4 +17,12 @@ class AccountSettings < TwitterRequest
   def url
     'https://api.twitter.com/1.1/account/settings.json'
   end
+
+  def success(response)
+    log.info("SUCCESS")
+    settings = JSON.parse(response.body)
+    log.info("#{settings}")
+    yield settings
+  end
+
 end
