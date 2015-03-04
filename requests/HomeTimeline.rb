@@ -1,6 +1,6 @@
 require_relative '../core/MaxIdRequest'
 
-class Timeline < MaxIdRequest
+class HomeTimeline < MaxIdRequest
 
   def initialize(args)
     super args
@@ -9,7 +9,7 @@ class Timeline < MaxIdRequest
   end
 
   def request_name
-    "Home_Timeline"
+    "HomeTimeline"
   end
 
   def twitter_endpoint
