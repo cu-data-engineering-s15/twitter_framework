@@ -3,12 +3,10 @@ require_relative '../requests/Timeline'
 require 'trollop'
 
 USAGE = %Q{
-get_tweets: Retrieve tweets for a given Twitter screen_name.
+get_home_tweets: Retrieve tweets for the current authenticating user.
 
 Usage:
-  ruby get_tweets.rb <options> <screen_name>
-
-  <screen_name>: A Twitter screen_name.
+  ruby get_home_tweets.rb <options>
 
 The following options are supported:
 }
@@ -18,7 +16,7 @@ def parse_command_line
   options = {type: :string, required: true}
 
   opts = Trollop::options do
-    version "get_tweets 0.1 (c) 2015 Kenneth M. Anderson"
+    version "get_home_tweets 0.1 (c) 2015 Kenneth M. Anderson, Dan Bye"
     banner USAGE
     opt :props, "OAuth Properties File", options
   end
@@ -41,9 +39,9 @@ if __FILE__ == $0
 
   args     = { params: params, data: data }
 
-  twitter = Timeline.new(args)
+  twitter = HomeTimeline.new(args)
 
-  puts "Collecting up to 3200 most recent tweets for '#{input[:screen_name]}'"
+  puts "Collecting up to 3200 most recent tweets for current user."
 
   File.open('tweets.json', 'w') do |f|
     twitter.collect do |tweets|
