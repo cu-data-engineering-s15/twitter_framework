@@ -57,14 +57,25 @@ if __FILE__ == $0
 
   twitter = FriendshipsShow.new(args)
 
-  puts "Showing the friendship level between two Twitter users, '#{input[:source_screen_name]}' and '#{input[:target_screen_name]}'"
+twitter.collect do |relationship|
+    source_relationship = relationship['source']
+    target_relationship = relationship['target']
 
-  File.open('tweets.json', 'w') do |f|
-    twitter.collect do |relationship|
-      tweets.each do |tweet|
-        f.puts "#{tweet.to_json}\n"
-      end
-    end
+    source = source_relationship['screen_name']
+    target = target_relationship['screen_name']
+
+    puts "#{source} screen name is: #{source_relationship['screen_name']}"
+    puts "#{source} id is: #{source_relationship['id']}"
+    puts "Does #{source} follows #{target}     : #{source_relationship['following']}"
+    puts "Is #{source} is followed by #{target}: #{source_relationship['followed_by']}"
+    puts "Can #{source} Direct Message #{target}: #{source_relationship['can_dm']}"
+    puts "Has #{source} marked #{target} as spam: #{source_relationship['marked_spam']}"
+    puts
+    puts "#{target} screen name is: #{target_relationship['screen_name']}"
+    puts "#{target} id is: #{target_relationship['id']}"
+    puts "Is #{target} is followed by #{source}: #{target_relationship['followed_by']}"
+    puts "Does #{target} follows #{source}       : #{target_relationship['following']}"
+
   end
 
   puts "DONE."
