@@ -11,14 +11,14 @@ Usage:
   <endpoint>: A Twitter REST API endpoint.
 
   Examples  : /application/rate_limit_status
-              /status/user_timeline
+              /statuses/user_timeline
               /friends/ids
 
 The following options are supported:
 }
 
 def parse_endpoint(endpoint)
-  pattern = /^\/(?<resource>\w+)\/\w+$/
+  pattern = /^\/(?<resource>\w+)(\/[:\w]+)*$/
   data    = pattern.match(endpoint)
   if data.nil?
     Trollop::die "Endpoint must be of form '/resource/method'"
