@@ -39,7 +39,7 @@ end
 # being run ("$0") instead of having been required or loaded by another 
 # file; "$:" is the LOAD_PATH directory
 
-if __FILE__ = $0
+if __FILE__ == $0
   # Find the parent directory of this file and add it to the front
   # of the list of locations to look in when using require
 
@@ -52,16 +52,14 @@ if __FILE__ = $0
 
   args     = { params: params, data: data }
 
-  twitter = FriendshipLookup.new(args)
+  friendships_data = FriendshipLookup.new(args)
 
   puts "Collecting up to 100 friendships of '#{input[:screen_name]}'"
 
-  File.open('friendships.json' , 'w') do |f|
-    twitter.collect do |friendships|
-      tweets.each do |friendship|
-        f.puts "#{friendship.to_json}\n"
-      end
-    end
+
+  friendships_data.collect do |friendship|
+    puts "#{friendship}\n"
+    puts "#{friendship.size} friendships retrieved.\n"
   end
 
   puts "DONE."	
