@@ -7,7 +7,7 @@ reverse_geocode: Given a latitude and a longitude, searches for up to 20 places.
 
 Usage:
 
-  ruby get_oembed.rb <options> <latitude> <longitude>
+  ruby reverse_geocode.rb <options> <latitude> <longitude>
 
 Example: 
 
