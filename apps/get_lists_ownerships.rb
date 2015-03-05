@@ -1,4 +1,4 @@
-require_relative '../requests/ListMemberIds'
+require_relative '../requests/ListsOwnerships'
 
 require 'trollop'
 
@@ -27,7 +27,6 @@ def parse_command_line
   end
 
   opts[:owner_screen_name] = ARGV[0]
-  opts[:list_slug] = ARGV[1]
   opts
 end
 
@@ -43,7 +42,7 @@ if __FILE__ == $0
 
   twitter = ListsOwnerships.new(args)
 
-  puts "Collecting the lists owned by specific user '#{input[:list_slug]}'"
+  puts "Collecting the lists owned by specific user '#{input[:owner_screen_name]}'"
 
   File.open('list_ownerships.json', 'w') do |f|
     twitter.collect do |lists|
