@@ -3,12 +3,12 @@ require_relative '../requests/StatusRetweetId'
 require 'trollop'
 
 USAGE = %Q{
-get_tweets: Retrieve tweets for a given Twitter screen_name.
+get_retweets: Retrieves ids for retweets, specified by the id parameter. 
 
 Usage:
-  ruby get_tweets.rb <options> <screen_name>
+  ruby get_statusesId.rb <options> <Id>
 
-  <screen_name>: A Twitter screen_name.
+  <Id>: The numerical ID of the desired Tweet.
 
 The following options are supported:
 }
@@ -18,7 +18,7 @@ def parse_command_line
   options = {type: :string, required: true}
 
   opts = Trollop::options do
-    version "get_tweets 0.1 (c) 2015 Kenneth M. Anderson; Modified by Sheefali Tewari"
+    version "get_retweets 0.1 (c) 2015 Kenneth M. Anderson; Modified by Sheefali Tewari."
     banner USAGE
     opt :props, "OAuth Properties File", options
   end
@@ -27,7 +27,7 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:screen_name] = ARGV[0]
+  opts[:Id] = ARGV[0]
   opts
 end
 
@@ -36,22 +36,19 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { screen_name: input[:screen_name] }
+  params = { Id: input[:Id] }
   data   = { props: input[:props] }
 
   args     = { params: params, data: data }
 
   twitter = StatusRetweetId.new(args)
 
-  puts "Collecting up to 3200 most recent tweets for '#{input[:screen_name]}'"
+  puts "Retrieves a retweeted tweet, specified by the id parameter.'#{input[:Id]}'"
 
-  File.open('tweets.json', 'w') do |f|
-    twitter.collect do |tweets|
-      tweets.each do |tweet|
-        f.puts "#{tweet.to_json}\n"
-      end
-    end
-  end
+  twitter.collect do |data|
+  puts data
+
+end
 
   puts "DONE."
 
