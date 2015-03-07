@@ -1,38 +1,40 @@
-require_relative '../requests/FriendshipLookup'
+require_relative '../requests/FriendshipsLookup'
 
 require 'trollop'
 
 USAGE = %Q{
-get_friendships_lookup = Returns the relationships of a given user to the comma-separated 
-list of up to 100 screen_names or user_ids provided. 
+get_friendships_lookup: Returns the relationships of the current user to the sapce-separated list of up to 100 screen_names or user_ids provided. 
 
-USAGE =
-  ruby get_friendships_lookup.rb <options> <screen_names> 
+Usage: ruby get_friendships_lookup.rb <options>
 
-  <screen_name>: comma separated list of Screen Names.
+  <screen_names>: space-separated list of Twitter screen names.
+  <user_ids>    : space-separated list of Twitter user ids.
 
-  The following options are supported:
+The following options are supported:
 }
 
 def parse_command_line
   
   # Create ruby hash representing JSON schema
-  options = {type: :string, required: true}
+  options_props = {type: :string, required: true}
+  options_names = {type: :strings}
+  options_ids   = {type: :integers}
 
   # trollop returns a hash of the command line required strings
   opts = Trollop::options do
     version "get_friendships_lookup 0.1 (c) 2015 Kenneth M. Anderson; Updated by David Aragon"
     banner USAGE
-    opt :props, "OAuth Properties File", options
+    opt :props, "OAuth Properties File", options_props
+    opt :screen_names, "Screen Names", options_names
+    opt :user_ids, "User Ids", options_ids
+    conflicts :screen_names, :user_ids
   end	
 		
   unless File.exist?(opts[:props])
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:screen_name] = ARGV[0]
   opts
-
 end
 
 # Only run the following code when this file ("__FILE__") is the main file 
@@ -40,27 +42,41 @@ end
 # file; "$:" is the LOAD_PATH directory
 
 if __FILE__ == $0
-  # Find the parent directory of this file and add it to the front
-  # of the list of locations to look in when using require
 
   # synchronise STDOUT by default to see output as it happens.
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { screen_name: input[:screen_name] }
-  data   = { props: input[:props] }
 
-  args     = { params: params, data: data }
+  params = {}
 
-  friendships_data = FriendshipLookup.new(args)
-
-  puts "Collecting up to 100 friendships of '#{input[:screen_name]}'"
-
-
-  friendships_data.collect do |friendship|
-    puts "#{friendship}\n"
-    puts "#{friendship.size} friendships retrieved.\n"
+  if input.has_key?(:screen_names_given)
+    params[:screen_name] = input[:screen_names].join(',')
+  else
+    params[:user_id] = input[:user_ids].join(',')
   end
 
+  data = { props: input[:props] }
+  args = { params: params, data: data }
+
+  twitter = FriendshipsLookup.new(args)
+
+  puts "Determining friendship relationships with:"
+  if input.has_key?(:screen_names_given)
+    puts "   Screen Names: " + input[:screen_names].join(', ')
+  else
+    puts "   User Ids: " + input[:user_ids].join(', ')
+  end
+  
+  File.open('friendship_info.json', 'w') do |f|
+    twitter.collect do |friendships|
+      friendships.each do |info|
+        f.puts "#{info.to_json}"
+      end
+    end
+  end
+
+  puts "Friendship information stored in 'friendship_info.json'."
   puts "DONE."	
+
 end
