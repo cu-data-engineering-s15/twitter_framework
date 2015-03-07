@@ -14,6 +14,10 @@ class StatusesLookup < TwitterRequest
     'https://api.twitter.com/1.1/statuses/lookup.json'
   end
 
+  def escaped_params
+    params
+  end
+
   def success(response)
     log.info("SUCCESS")
     tweets = JSON.parse(response.body)
