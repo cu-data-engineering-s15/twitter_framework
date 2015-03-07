@@ -3,8 +3,7 @@ require_relative '../requests/ListsSubscriptions'
 require 'trollop'
 
 USAGE = %Q{
-get_lists_subscriptions: Returns a collection of lists the specified user is
-subscribed to.
+get_lists_subscriptions: Returns the lists subscribed to by the given user.
 
 Usage:
   ruby get_lists_subscriptions.rb <options> <screen_name>
@@ -46,17 +45,17 @@ if __FILE__ == $0
 
   twitter = ListsSubscriptions.new(args)
 
-  puts "Obtaining a collection of the lists '#{input[:screen_name]}' "\
-        "is subscribed to"
+  puts "Getting lists subscribed to by '#{input[:screen_name]}' "
 
   File.open('lists_subscriptions.txt', 'w') do |f|
     twitter.collect do |subs|
       subs.each do |sub|
-        f.puts "#{sub}\n"
+        f.puts "#{sub.to_json}"
       end
     end
   end
 
+  puts "List info stored in file 'lists_subscriptions.txt'."
   puts "DONE."
 
 end

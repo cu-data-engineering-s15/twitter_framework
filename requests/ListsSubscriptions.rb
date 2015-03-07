@@ -4,7 +4,7 @@ class ListsSubscriptions < CursorRequest
 
   def initialize(args)
     super args
-    params[:count] = 5000
+    params[:count] = 1000
     @count = 0
   end
 
@@ -22,7 +22,7 @@ class ListsSubscriptions < CursorRequest
 
   def success(response)
     log.info("SUCCESS")
-    subs = JSON.parse(response.body)["lists"].map { |list| list["uri"] }
+    subs = JSON.parse(response.body)["lists"]
     @count += subs.size
     log.info("#{subs.size} subscriptions received.")
     log.info("#{@count} total subscriptions received.")
