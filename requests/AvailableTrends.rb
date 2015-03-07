@@ -1,6 +1,6 @@
 require_relative '../core/TwitterRequest'
 
-class Available < TwitterRequest
+class AvailableTrends < TwitterRequest
 
   def initialize(args)
     super args

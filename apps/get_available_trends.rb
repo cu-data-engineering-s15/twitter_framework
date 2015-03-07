@@ -1,4 +1,4 @@
-require_relative '../requests/Available'
+require_relative '../requests/AvailableTrends'
 
 require 'trollop'
 
@@ -38,7 +38,7 @@ if __FILE__ == $0
 
   args     = { params:{} , data: data }
 
-  twitter = Available.new(args)
+  twitter = AvailableTrends.new(args)
 
   File.open('trendss.json', 'w') do |f|
     twitter.collect do |trendss|
