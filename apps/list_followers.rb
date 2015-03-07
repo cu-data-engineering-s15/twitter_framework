@@ -1,12 +1,12 @@
-require_relative '../requests/ListFollowersIds'
+require_relative '../requests/FollowersList'
 
 require 'trollop'
 
 USAGE = %Q{
-get_list_friends: Retrieve user ids that follow a given Twitter list.
+list_followers: Retrieve user objects that follow a given Twitter user.
 
 Usage:
-  ruby get_list_followers.rb <options> <screen_name>
+  ruby list_followers.rb <options> <screen_name>
 
   <screen_name>: A Twitter screen_name.
 
@@ -27,8 +27,7 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:owner_screen_name] = ARGV[0]
-  opts[:list_slug] = ARGV[1]
+  opts[:screen_name] = ARGV[0]
   opts
 end
 
@@ -37,23 +36,24 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { slug: input[:list_slug], owner_screen_name: input[:owner_screen_name] }
+  params = { screen_name: input[:screen_name] }
   data   = { props: input[:props] }
 
-  args     = { params: params, data: data }
+  args    = { params: params, data: data }
 
-  twitter = ListFollowerss.new(args)
+  twitter = FollowersList.new(args)
 
-  puts "Collecting the followers of the specified list '#{input[:list_slug]}'"
+  puts "Getting the followers of '#{input[:screen_name]}'."
 
-  File.open('list_followerss.txt', 'w') do |f|
-    twitter.collect do |ids|
-      ids.each do |id|
-        f.puts "#{id}\n"
+  File.open('followers.json', 'w') do |f|
+    twitter.collect do |followers|
+      followers.each do |follower|
+        f.puts "#{follower.to_json}"
       end
     end
   end
 
+  puts "User objects stored in file 'followers.json'."
   puts "DONE."
 
 end
