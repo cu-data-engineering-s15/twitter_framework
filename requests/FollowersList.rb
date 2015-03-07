@@ -1,19 +1,19 @@
 require_relative '../core/CursorRequest'
 
-class ListFollowers < CursorRequest
+class FollowersList < CursorRequest
 
   def initialize(args)
     super args
-    params[:count] = 5000
+    params[:count] = 200
     @count = 0
   end
 
   def request_name
-    "ListFollowers"
+    "FollowersList"
   end
 
   def twitter_endpoint
-    "/followers/lists"
+    "/followers/list"
   end
 
   def url
@@ -22,11 +22,11 @@ class ListFollowers < CursorRequest
 
   def success(response)
     log.info("SUCCESS")
-    ids = JSON.parse(response.body)["users"].map { |user| user["id"] }
-    @count += ids.size
-    log.info("#{ids.size} ids received.")
-    log.info("#{@count} total ids received.")
-    yield ids
+    users = JSON.parse(response.body)["users"]
+    @count += users.size
+    log.info("#{users.size} user(s) received.")
+    log.info("#{@count} total user(s) received.")
+    yield users
   end
 
 end
