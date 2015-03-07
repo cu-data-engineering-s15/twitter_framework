@@ -1,11 +1,6 @@
-#Author - Upendra Sabnis
 require_relative '../core/TwitterRequest'
 
 class SearchGeo < TwitterRequest
-
-  def initialize(args)
-    super args
-  end
 
   def request_name
     "GeoSearch"
@@ -22,16 +17,8 @@ class SearchGeo < TwitterRequest
   def success(response)
     log.info("SUCCESS")
     georesults = JSON.parse(response.body)['result']['places']
-    log.info("#{georesults.size} results(s) received.")
+    log.info("#{georesults.size} location(s) received.")
     yield georesults
-  end
-
-  def error(response)
-    if response.code == 404
-      puts "No geo search results found."
-      return
-    end
-    super
   end
 
 end
