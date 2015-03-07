@@ -1,14 +1,14 @@
-require_relative '../requests/statusesShowId'
+require_relative '../requests/ShowStatusId'
 
 require 'trollop'
 
 USAGE = %Q{
-get_status_ids: Returns a single Tweet, specified by the id parameter. The Tweet’s author will also be embedded within the tweet.
+show_status: Get the tweet specified by the given tweet id.
 
 Usage:
-  ruby get_statusesId.rb <options> <Id>
+  ruby show_status.rb <options> <id>
 
-  <Id>: The numerical ID of the desired Tweet.
+  <id>: The id of the desired tweet.
 
 The following options are supported:
 }
@@ -27,7 +27,7 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:Id] = ARGV[0]
+  opts[:id] = ARGV[0]
   opts
 end
 
@@ -35,27 +35,27 @@ if __FILE__ == $0
 
   STDOUT.sync = true
 
-  input  = parse_command_line
-  params = { Id: input[:Id] }
-  data   = { props: input[:props] }
+  input   = parse_command_line
 
-  args     = { params: params, data: data }
+  params  = { id: input[:id] }
+  data    = { props: input[:props] }
 
-  twitter = StatusesShowId.new(args)
+  args    = { params: params, data: data }
 
-  puts "Returns a single Tweet, specified by the id parameter. The Tweet’s author will also be embedded within the tweet. '#{input[:Id]}'"
+  twitter = ShowStatusId.new(args)
 
-    #File.open('showStatusId.txt', 'w') do |f|
-    #print(twitter.collect)
-      #print params
-  twitter.collect do |data|
-  puts data
-  #print(twitter.collect)
-end
+  puts "Getting tweet with id '#{input[:id]}'."
 
-  #end
+  File.open('tweet.json', 'w') do |f|
+    twitter.collect do |tweet|
+      puts "Tweet Created By: #{tweet['user']['screen_name']}"
+      puts "Tweet Created On: #{tweet['created_at']}"
+      puts "Tweet Text      : #{tweet['text']}"
+      f.puts "#{tweet.to_json}"
+    end
+  end
 
+  puts "Full tweet stored in file 'tweet.json'."
   puts "DONE."
 
 end
-
