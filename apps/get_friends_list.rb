@@ -48,6 +48,7 @@ if __FILE__ == $0
   File.open('friends_list.json', 'w') do |f|
     twitter.collect do |friends|
       friends.each do |friend|
+        puts friend['screen_name']
         f.puts "#{friend.to_json}\n"
       end
     end

@@ -4,7 +4,7 @@ class FriendsList < CursorRequest
 
   def initialize(args)
     super args
-    params[:count] = 20
+    params[:count] = 200
     @count = 0
   end
 
@@ -22,7 +22,7 @@ class FriendsList < CursorRequest
 
   def success(response)
     log.info("SUCCESS")
-    friends = JSON.parse(response.body)
+    friends = JSON.parse(response.body)['users']
     @count += friends.size
     log.info("#{friends.size} friend(s) recieved.")
     log.info("#{@count} total friend(s) recieved.")
