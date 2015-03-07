@@ -2,10 +2,6 @@ require_relative '../core/TwitterRequest'
 
 class FriendshipsShow < TwitterRequest
 
-  def initialize(args)
-    super args
-  end
-
   def request_name
     "FriendshipsShow"
   end

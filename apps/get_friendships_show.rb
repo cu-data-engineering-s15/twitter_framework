@@ -3,18 +3,15 @@ require_relative '../requests/FriendshipsShow'
 require 'trollop'
 
 USAGE = %Q{
-get_friendships_show: Shows friendship level between given Twitter source_screen_name and target_screen_name.
+get_friendships_show: Shows the relationships between two Twitter users.
 
 Usage:
   ruby get_friendships_show.rb <options> <source_screen_name> <target_screen_name>
 
-  <source_screen_name>: A Twitter source_screen_name.
-  <target_screen_name>: A Twitter target_screen_name
+  <source_screen_name>: A Twitter screen name.
+  <target_screen_name>: A second Twitter screen name
 
 The following options are supported:
-
-  --params: An OAuth Properties File
-
 }
 
 def parse_command_line
@@ -22,7 +19,7 @@ def parse_command_line
   options = {type: :string, required: true}
 
   opts = Trollop::options do
-    version "get_tweets 0.1 (c) 2015 Kenneth M. Anderson; Updated by Priyanka Goyal."
+    version "get_friendships_show 0.1 (c) 2015 Kenneth M. Anderson; Updated by Priyanka Goyal."
     banner USAGE
     opt :props, "OAuth Properties File", options
   end
@@ -31,18 +28,38 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:source_screen_name] = ARGV[0]
-  opts[:target_screen_name] = ARGV[1]
+  opts[:source] = ARGV[0]
+  opts[:target] = ARGV[1]
 
-  if opts[:source_screen_name] == nil
-    Trollop::die "A source screen name is required to show friendship."
+  if opts[:source].nil?
+    Trollop::die "A source screen name is required."
   end
 
-  if opts[:target_screen_name] == nil
-    Trollop::die "A target screen name is required to show friendship."
+  if opts[:target].nil?
+    Trollop::die "A target screen name is required."
+  end
+
+  if opts[:source].downcase == opts[:target].downcase
+    Trollop::die "Two different screen names are required."
   end
 
   opts
+end
+
+def describe_source(source, target, source_info)
+  puts "The source is #{source}."
+  puts "#{source}'s id is #{source_info['id']}."
+  puts "#{source} follows #{target}       : #{source_info['following']}"
+  puts "#{source} is followed by #{target}: #{source_info['followed_by']}"
+  puts "#{source} can direct message #{target}: #{source_info['can_dm']}"
+  puts "#{source} marked #{target} as spam?: #{source_info['marked_spam']}"
+end
+
+def describe_target(target, source, target_info)
+  puts "The target is #{target}."
+  puts "#{target}'s id is #{target_info['id']}."
+  puts "#{target} follows #{source}       : #{target_info['following']}"
+  puts "#{target} is followed by #{source}: #{target_info['followed_by']}"
 end
 
 if __FILE__ == $0
@@ -50,31 +67,27 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { source_screen_name: input[:source_screen_name], target_screen_name: input[:target_screen_name] }
-  data   = { props: input[:props] }
 
-  args     = { params: params, data: data }
+  params = {}
+  params[:source_screen_name] = input[:source]
+  params[:target_screen_name] = input[:target]
+
+  data = { props: input[:props] }
+
+  args = { params: params, data: data }
 
   twitter = FriendshipsShow.new(args)
 
-twitter.collect do |relationship|
-    source_relationship = relationship['source']
-    target_relationship = relationship['target']
+  twitter.collect do |info|
+    source_info = info['source']
+    target_info = info['target']
 
-    source = source_relationship['screen_name']
-    target = target_relationship['screen_name']
+    source = source_info['screen_name']
+    target = target_info['screen_name']
 
-    puts "#{source} screen name is: #{source_relationship['screen_name']}"
-    puts "#{source} id is: #{source_relationship['id']}"
-    puts "Does #{source} follows #{target}     : #{source_relationship['following']}"
-    puts "Is #{source} is followed by #{target}: #{source_relationship['followed_by']}"
-    puts "Can #{source} Direct Message #{target}: #{source_relationship['can_dm']}"
-    puts "Has #{source} marked #{target} as spam: #{source_relationship['marked_spam']}"
+    describe_source(source, target, source_info)
     puts
-    puts "#{target} screen name is: #{target_relationship['screen_name']}"
-    puts "#{target} id is: #{target_relationship['id']}"
-    puts "Is #{target} is followed by #{source}: #{target_relationship['followed_by']}"
-    puts "Does #{target} follows #{source}       : #{target_relationship['following']}"
+    describe_target(target, source, target_info)
 
   end
 
