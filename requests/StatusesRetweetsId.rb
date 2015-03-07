@@ -5,13 +5,10 @@ class StatusRetweetId < TwitterRequest
   def initialize(args)
     super args
     params[:count] = 100
-    params[:id] = 123
-    @count = 0
-    @id = 0
   end
 
   def request_name
-    "StatusRetweetId"
+    "StatusesRetweetsId"
   end
 
   def twitter_endpoint
@@ -19,13 +16,13 @@ class StatusRetweetId < TwitterRequest
   end
 
   def url
-    'https://api.twitter.com/1.1/statuses/retweets.json'
+    "https://api.twitter.com/1.1/statuses/retweets/#{data[:id]}.json"
   end
 
   def success(response)
     log.info("SUCCESS")
     tweets = JSON.parse(response.body)
-    @count += tweets.size
+    log.info("#{tweets.size} retweet(s) received.")
     yield tweets
   end
 

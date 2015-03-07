@@ -1,14 +1,14 @@
-require_relative '../requests/StatusRetweetId'
+require_relative '../requests/StatusesRetweetsId'
 
 require 'trollop'
 
 USAGE = %Q{
-get_retweets: Retrieves ids for retweets, specified by the id parameter. 
+get_retweets: Retrieves the retweets of the tweet with the given id. 
 
 Usage:
-  ruby get_statusesId.rb <options> <Id>
+  ruby get_retweets.rb <options> <id>
 
-  <Id>: The numerical ID of the desired Tweet.
+  <id>: The numerical id of the desired Tweet.
 
 The following options are supported:
 }
@@ -27,7 +27,7 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:Id] = ARGV[0]
+  opts[:id] = ARGV[0]
   opts
 end
 
@@ -36,20 +36,23 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { Id: input[:Id] }
-  data   = { props: input[:props] }
+  data   = { id: input[:id], props: input[:props] }
 
-  args     = { params: params, data: data }
+  args     = { params: {}, data: data }
 
   twitter = StatusRetweetId.new(args)
 
-  puts "Retrieves a retweeted tweet, specified by the id parameter.'#{input[:Id]}'"
+  puts "Retrieving the retweets of the tweet with this id: #{input[:id]}"
 
-  twitter.collect do |data|
-  puts data
+  File.open('retweets.json', 'w') do |f|
+    twitter.collect do |tweets|
+      tweets.each do |tweet|
+        f.puts "#{tweet.to_json}\n"
+      end
+    end
+  end
 
-end
-
+  puts "Retweets were stored in the file 'retweets.json'."
   puts "DONE."
 
 end
