@@ -3,12 +3,12 @@ require_relative '../requests/ListBlocks'
 require 'trollop'
 
 USAGE = %Q{
-get_blocks: Retrieve blocked Twitter members.
+get_blocks: Retrieve Twitter users blocked by the current user.
 
 Usage:
-  ruby get_blocks_list.rb <options> <screen_name> <list_slug>
+  ruby get_blocks_list.rb <options>
 
-  <screen_name>: Screen name of owner who is blocking.
+The following options are supported:
 }
 
 def parse_command_line
@@ -25,7 +25,6 @@ def parse_command_line
     Trollop::die :props, "must point to a valid oauth properties file"
   end
 
-  opts[:screen_name] = ARGV[0]
   opts
 end
 
@@ -34,20 +33,17 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  params = { screen_name: input[:screen_name] }
   data   = { props: input[:props] }
 
-  args     = { params: params, data: data }
+  args     = { params: {}, data: data }
 
   twitter = ListBlocks.new(args)
 
-  puts "Collecting the ids of the Twitter users that are blocked by '#{input[:screen_name]}'"
-
-  File.open('blocks_list_ids.txt', 'w') do |f|
-    twitter.collect do |ids|
-      ids.each do |id|
-        f.puts "#{id}\n"
-      end
+  puts "Retrieving the Twitter users blocked by the current user."
+  puts
+  twitter.collect do |users|
+    users.each do |user|
+      puts "#{user['screen_name']}: #{user['id']}"
     end
   end
 
