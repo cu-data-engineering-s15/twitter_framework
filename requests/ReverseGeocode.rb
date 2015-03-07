@@ -2,10 +2,6 @@ require_relative '../core/TwitterRequest'
  
 class ReverseGeocode < TwitterRequest
 
-  def initialize(args)
-    super args
-  end
-
   def request_name
     "ReverseGeocode"
   end
@@ -20,17 +16,9 @@ class ReverseGeocode < TwitterRequest
 
   def success(response)
     log.info("SUCCESS")
-    geodata = JSON.parse(response.body)
-    log.info("geodata received.")
+    geodata = JSON.parse(response.body)['result']['places']
+    log.info("#{geodata.size} location(s) received.")
     yield geodata
-  end
-
-  def error(response)
-    if response.code == 404
-      puts "No location found at specified co-ordinates "
-      return
-    end
-    super
   end
 
 end
