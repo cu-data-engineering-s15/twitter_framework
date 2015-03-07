@@ -1,9 +1,11 @@
-require_relative '../core/TwitterRequest'
+require_relative '../core/CursorRequest'
 
-class ListsOwnerships < TwitterRequest
+class ListsOwnerships < CursorRequest
 
   def initialize(args)
     super args
+    params[:count] = 1000
+    @count = 0
   end
 
   def request_name
@@ -19,16 +21,12 @@ class ListsOwnerships < TwitterRequest
   end
 
   def success(response)
+    log.info("SUCCESS")
     lists = JSON.parse(response.body)['lists']
+    @count += lists.size
+    log.info("#{lists.size} list(s) received.")
+    log.info("#{@count} total list(s) received.")
     yield lists
-  end
-
-  def error(response)
-    if response.code == 404
-      puts "No information found at specified url"
-      return
-    end
-    super
   end
 
 end
