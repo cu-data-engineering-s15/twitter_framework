@@ -24,6 +24,7 @@ module TwitterRates
     request     = Typhoeus::Request.new(rate_url, rate_options)
     response    = request.run
     @@rates     = JSON.parse(response.body)['resources']
+	#puts @@rates.inspect # call to inspect, converts hashtable into string
     @rate_count = twitter_calls_remaining
   end
 
