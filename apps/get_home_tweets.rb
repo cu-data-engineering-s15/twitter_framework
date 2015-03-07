@@ -3,7 +3,7 @@ require_relative '../requests/HomeTimeline'
 require 'trollop'
 
 USAGE = %Q{
-get_home_tweets: Retrieve tweets for the current authenticating user.
+get_home_tweets: Retrieve tweets from the current user's home timeline.
 
 Usage:
   ruby get_home_tweets.rb <options>
@@ -33,9 +33,9 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  data   = { props: input[:props] }
 
-  args     = { params: {}, data: data }
+  data   = { props: input[:props] }
+  args   = { params: {}, data: data }
 
   twitter = HomeTimeline.new(args)
 
@@ -49,6 +49,7 @@ if __FILE__ == $0
     end
   end
 
+  puts "Tweets stored in the file 'home_tweets.json'."
   puts "DONE."
 
 end
