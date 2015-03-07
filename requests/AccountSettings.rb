@@ -2,10 +2,6 @@ require_relative '../core/TwitterRequest'
 
 class AccountSettings < TwitterRequest
 
-  def initialize(args)
-    super args
-  end
-
   def request_name
     "AccountSettings"
   end
@@ -21,7 +17,6 @@ class AccountSettings < TwitterRequest
   def success(response)
     log.info("SUCCESS")
     settings = JSON.parse(response.body)
-    log.info("#{settings}")
     yield settings
   end
 
