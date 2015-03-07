@@ -22,12 +22,10 @@ class BlockIds < CursorRequest
   def success(response)
     log.info("SUCCESS")
     ids = JSON.parse(response.body)['ids']
-	#puts ids.inspect
-	@count += ids.size
+    @count += ids.size
     log.info("#{ids.size} ids received.")
     log.info("#{@count} total ids received.")
     yield ids
   end
-  
   
 end
