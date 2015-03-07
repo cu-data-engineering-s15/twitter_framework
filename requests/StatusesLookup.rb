@@ -2,10 +2,6 @@ require_relative '../core/TwitterRequest'
 
 class StatusesLookup < TwitterRequest
 
-  def initialize(args)
-    super args
-  end
-
   def request_name
     "StatusesLookup"
   end
@@ -20,17 +16,9 @@ class StatusesLookup < TwitterRequest
 
   def success(response)
     log.info("SUCCESS")
-    html = JSON.parse(response.body)['html']
-    log.info("html received.")
-    yield html
-  end
-
-  def error(response)
-    if response.code == 404
-      puts "No tweets found at specified id or url"
-      return
-    end
-    super
+    tweets = JSON.parse(response.body)
+    log.info("#{tweets.size} tweet(s) received.")
+    yield tweets
   end
 
 end
