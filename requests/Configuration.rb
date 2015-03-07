@@ -1,6 +1,6 @@
 require_relative '../core/TwitterRequest'
 
-class UsersShow < TwitterRequest
+class Configuration < TwitterRequest
 
   def request_name
     "Configuration"
@@ -16,17 +16,9 @@ class UsersShow < TwitterRequest
 
   def success(response)
     log.info("SUCCESS!!!")
-    users_data = JSON.parse(response.body)
-    log.info("Configuration file '#{data[:user]}'")
-    yield users_data
-  end
-
-  def error(response)
-    if response.code == 404
-      puts "No file found, error!!"
-      return
-    end
-    super
+    info = JSON.parse(response.body)
+    log.info("Configuration Info received.")
+    yield info
   end
 
 end
