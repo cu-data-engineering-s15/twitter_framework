@@ -3,12 +3,10 @@ require_relative '../requests/MuteIDs'
 require 'trollop'
 
 USAGE = %Q{
-get_mute_ids: Retrieve user objects followed by a given Twitter screen_name.
+get_mute_ids: Get the ids of Twitter users muted by the current user.
 
 USAGE:
-  ruby get_mute_ids.rb <options> <screen_name>
-
-  <screen_name>: A Twitter screen_name.
+  ruby get_mute_ids.rb <options>
 
 The following options are supported:
 }
@@ -35,15 +33,15 @@ if __FILE__ == $0
   STDOUT.sync = true
 
   input  = parse_command_line
-  data   = { props: input[:props] }
 
+  data   = { props: input[:props] }
   args   = { params: {}, data: data }
 
   twitter = MuteIDs.new(args)
 
-  puts "Collecting the objects of the Twitter users followed by '#{input[:screen_name]}'"
+  puts "Getting the ids of Twitter users muted by the current user."
 
-  File.open('mute_ids.json', 'w') do |f|
+  File.open('mute_ids.txt', 'w') do |f|
     twitter.collect do |mutes|
       mutes.each do |mute|
         f.puts "#{mute}\n"
@@ -51,6 +49,7 @@ if __FILE__ == $0
     end
   end
 
+  puts "Ids are stored in 'mute_ids.txt'."
   puts "DONE."
 
 end
