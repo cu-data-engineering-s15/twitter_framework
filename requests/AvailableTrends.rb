@@ -2,10 +2,6 @@ require_relative '../core/TwitterRequest'
 
 class AvailableTrends < TwitterRequest
 
-  def initialize(args)
-    super args
-  end
-
   def request_name
     "AvailableTrends"
   end
@@ -20,17 +16,9 @@ class AvailableTrends < TwitterRequest
 
   def success(response)
     log.info("SUCCESS")
-    trendss = JSON.parse(response.body)
-    log.info("Trends data received")
-    yield trendss
-  end
-
-  def error(response)
-    if response.code == 404
-      puts "No trending topic information for this Where On Earth ID."
-      return
-    end
-    super
+    locations = JSON.parse(response.body)
+    log.info("#{locations.size} location(s) received.")
+    yield locations
   end
 
 end
