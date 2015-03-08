@@ -2,10 +2,6 @@ require_relative '../core/TwitterRequest'
 
 class UsersProfileBanner < TwitterRequest
 
-  def initialize(args)
-    super args
-  end
-
   def request_name
     "UsersProfileBanner"
   end
@@ -18,20 +14,16 @@ class UsersProfileBanner < TwitterRequest
     'https://api.twitter.com/1.1/users/profile_banner.json'
   end
 
-  def escaped_params
-    params
-  end
-
   def success(response)
     log.info("SUCCESS")
-    users_data = JSON.parse(response.body)
-    log.info("users profile banner information received.")
-    yield users_data
+    sizes = JSON.parse(response.body)["sizes"]
+    log.info("#{sizes.count} size(s) received.")
+    yield sizes
   end
 
   def error(response)
     if response.code == 404
-      puts "No users found"
+      puts "No profile banner information found"
       return
     end
     super
