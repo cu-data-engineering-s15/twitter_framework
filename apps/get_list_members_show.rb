@@ -6,9 +6,10 @@ USAGE = %Q{
 get_list_members_show: Check if the specified user is a member of the specified list.
 
 Usage:
-  ruby get_list_members.rb <options> <owner_screen_name> <list_slug>
+  ruby get_list_members.rb <options> <owner_screen_name> <list_slug> <screen_name>
 
   <owner_screen_name>: The screen name of the list owner.
+  <screen_name>: The user screen name
   <list_slug>: The slug of the list.
 }
 
@@ -44,7 +45,7 @@ if __FILE__ == $0
 
   twitter = ListMembersShow.new(args)
 
-  puts "Collecting the ids of the Twitter users that are members of list '#{input[:list_slug]}'"
+  puts "Checking to see if '#{input[:screen_name]}' is a member of list '#{input[:list_slug]}'"
 
   File.open('get_list_members_show.txt', 'w') do |f|
     twitter.collect do |ids|

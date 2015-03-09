@@ -23,14 +23,13 @@ class ListMembersShow < TwitterRequest
   def success(response)
     lists = JSON.parse(response.body)['lists']
     @count += lists.size
-    log.info("#{lists.size} list(s) received.")
-    log.info("#{@count} total list(s) received.")
+    log.info("member is in group list.")
     yield lists
   end
 
   def error(response)
     if response.code == 404
-      puts "No information found at specified url"
+      puts "No information found at specified url. Member not in list"
       return
     end
     super
