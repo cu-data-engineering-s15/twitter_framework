@@ -1,4 +1,4 @@
-oauth.properties
+*.properties
 *.json
 *.txt
 *.html
