@@ -77,13 +77,21 @@ class TwitterRequest
   end
 
   def collect
-    response = make_request
-    if response.code == 200
-      success(response) do |data|
-        yield data
+    while true do
+      response = make_request
+      if response.code == 200
+        success(response) do |data|
+          yield data
+        end
+	break
+      elsif response.code == 500
+        puts "FAILURE      : #{Time.now}"
+        puts "Response Code: #{response.code}"
+        puts "Response Info: #{response.status_message}"
+        puts "RETRYING!"
+      else
+        error(response)
       end
-    else
-      error(response)
     end
   end
 
